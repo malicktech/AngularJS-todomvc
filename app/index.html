@@ -42,7 +42,7 @@
         <section id="main" ng-show="todos.length" ng-cloak>
             <input id="toggle-all" type="checkbox" ng-model="allChecked" ng-click="markAll(allChecked)">
             <label for="toggle-all">Mark all as complete</label>
-            <ul id="todo-list">
+            <ul id="todo-list" ui-sortable ng-model="todos">
                 <li ng-repeat="todo in todos | filter:statusFilter | filter:search  | orderBy:'completed'  " ng-class="{completed: todo.completed, editing: todo.editing, fadeOut: todo.completed, fadeIn: !todo.completed }" ng-dblclick="todo.editing = true" class="view animated roll">
                     <div class="view">
                         <input class="toggle" type="checkbox" ng-model="todo.completed" ng-change="toggleCompleted(todo)">
@@ -80,11 +80,15 @@
     <!-- build:js(.) scripts/vendor.js -->
     <!-- common-->
     <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+    <script src="bower_components/angular-ui-sortable/sortable.js"></script>
+    <script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:js({.tmp,app}) scripts/scripts.js -->

@@ -2,7 +2,8 @@
 
 
 var todomvc = angular.module('todomvc', [
-    'ngAnimate'
+    'ngAnimate',
+    'ui.sortable'
 
 ]);
 

@@ -18,3 +18,10 @@ Run `grunt` for building and `grunt serve` for preview.
 ## Testing
 
 Running `grunt test` will run the unit tests with karma.
+
+
+## TODO
+
+stock list todos in localstorage
+
+inspired from : http://todomvc.com/
