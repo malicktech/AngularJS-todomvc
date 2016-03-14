@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <!-- <link rel="stylesheet" href="styles/main.css"> -->
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <!-- endbuild -->
+    <style>
+    [ng-cloak] {
+        display: none;
+    }
+    </style>
+</head>
+
+<body ng-app="todomvc">
+    <!--[if lte IE 8]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <!-- Add your site or application content here -->
+    <section id="todoapp" ng-controller="TodoCtrl">
+        <!-- New Task Form -->
+        <header id="header">
+            <h1>TodoList</h1>
+            <form id="todo-form" ng-submit="addTodo()" deferred-cloak>
+                <input type="text" id="new-todo" placeholder="{{placeholder}}" ng-model="newTodo" ng-disabled="saving" autofocus autocomplete="off">
+            </form>
+            <input id="new-todo" placeholder="Rechercher" ng-model="search">
+        </header>
+        <!-- Todo LIst -->
+        <section id="main" ng-show="todos.length" ng-cloak>
+            <input id="toggle-all" type="checkbox" ng-model="allChecked" ng-click="markAll(allChecked)">
+            <label for="toggle-all">Mark all as complete</label>
+            <ul id="todo-list">
+                <li ng-repeat="todo in todos | filter:statusFilter | filter:search  | orderBy:'completed'  " ng-class="{completed: todo.completed, editing: todo.editing, fadeOut: todo.completed, fadeIn: !todo.completed }" ng-dblclick="todo.editing = true" class="view animated roll">
+                    <div class="view">
+                        <input class="toggle" type="checkbox" ng-model="todo.completed" ng-change="toggleCompleted(todo)">
+                        <label ng-dblclick="editTodo(todo)">{{todo.title}}</label>
+                        <button class="destroy" ng-click="removeTodo(todo)"></button>
+                    </div>
+                    <form ng-submit="saveEdits(todo, 'submit')">
+                        <input class="edit" ng-model="todo.title" ng-blur="editTodo(todo)">
+                    </form>
+                </li>
+            </ul>
+        </section>
+        <!-- Footer & filter -->
+        <footer id="footer" ng-show="todos.length" ng-cloak>
+            <span id="todo-count"><strong>{{remainingCount}}</strong>
+            <ng-pluralize count="remainingCount" when="{ one: 'item left', other: 'items left' }"></ng-pluralize>
+          </span>
+            <ul id="filters">
+                <li><a ng-class="{selected: location.path() == ''} " href="#/">All</a></li>
+                <li><a ng-class="{selected: location.path() == 'active'}" href="#/active">Active</a></li>
+                <li><a ng-class="{selected: location.path() == 'completed'}" href="#/completed">Completed</a></li>
+            </ul>
+        </footer>
+    </section>
+    <footer id="info">
+        <p>Double-click to edit a todo</p>
+        <p>Credits:
+            <a href="http://twitter.com/cburgdorf">Christoph Burgdorf</a>,
+            <a href="http://ericbidelman.com">Eric Bidelman</a>,
+            <a href="http://jacobmumm.com">Jacob Mumm</a> and
+            <a href="http://blog.igorminar.com">Igor Minar</a>
+        </p>
+        <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+    </footer>
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- common-->
+    <!-- bower:js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/directives/ngDeferredCloak.js"></script>
+    <!-- 
+    <script src="scripts/services/todoStorage.js"></script>
+    <script src="scripts/directives/todoFocus.js"></script>
+    <script src="scripts/directives/todoEscape.js"></script>
+    -->
+    <!-- endbuild -->
+</body>
+
+</html>

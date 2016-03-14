@@ -1,0 +1,38 @@
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+    display: none !important;
+}
+
+
+/* ---------------------------------------------------*\
+en utilisant les animation css
+\* ---------------------------------------------------*/
+
+.animated .ng-enter,
+.animated .ng-leave {
+    -webkit-animation-duration: 1s;
+    /* Chrome, Safari, Opera */
+    -webkit-animation-fill-mode: both;
+}
+
+.roll .ng-enter {
+    /*-webkit-animation-name: fadeInLeft;*/
+    -webkit-animation-name: rollIn;
+}
+
+.roll .ng-leave {
+    /*-webkit-animation-name: fadeOutRight;*/
+    -webkit-animation-name: rollOut;
+}
+
+.fade .ng-enter {
+    -webkit-animation-name: fadeIn;
+}
+
+.fade .ng-leave {
+    -webkit-animation-name: fadeOut;
+}
