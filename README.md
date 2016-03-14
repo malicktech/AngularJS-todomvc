@@ -24,4 +24,5 @@ Running `grunt test` will run the unit tests with karma.
 
 stock list todos in localstorage
 
-inspired from : http://todomvc.com/
+inspired from : http://todomvc.com/ & http://yeoman.io/codelab/
+

@@ -10,131 +10,134 @@
 todomvc.controller('TodoCtrl', function TodoCtrl($scope, $routeParams, $filter, store) {
 
 
-            var todos = $scope.todos = store.todos;
+    var todos = $scope.todos = store.todos;
 
-            $scope.newTodo = '';
-            $scope.editedTodo = null;
-            $scope.placeholder = "What needs to be done?";
-            // $scope.placeholder = "Loading ....";
+    $scope.newTodo = '';
+    $scope.editedTodo = null;
+    $scope.placeholder = "What needs to be done?";
+    // $scope.placeholder = "Loading ....";
 
-            $scope.$watch('todos', function() {
-                $scope.remainingCount = $filter('filter')(todos, {
-                    completed: false
-                }).length;
-                $scope.completedCount = todos.length - $scope.remainingCount;
-                $scope.allChecked = !$scope.remainingCount;
-            }, true);
+    $scope.$watch('todos', function() {
+        $scope.remainingCount = $filter('filter')(todos, {
+            completed: false
+        }).length;
+        $scope.completedCount = todos.length - $scope.remainingCount;
+        $scope.allChecked = !$scope.remainingCount;
+    }, true);
 
-            // Monitor the current route for changes and adjust the filter accordingly.
-            $scope.$on('$routeChangeSuccess', function() {
-                var status = $scope.status = $routeParams.status || '';
-                $scope.statusFilter = (status === 'active') ? {
-                    completed: false
-                } : (status === 'completed') ? {
-                    completed: true
-                } : {};
+    // Monitor the current route for changes and adjust the filter accordingly.
+    $scope.$on('$routeChangeSuccess', function() {
+        var status = $scope.status = $routeParams.status || '';
+        $scope.statusFilter = (status === 'active') ? {
+            completed: false
+        } : (status === 'completed') ? {
+            completed: true
+        } : {};
+    });
+
+    // Ajout d'une nouvelle tâche
+    // ================================================
+    $scope.addTodo = function() {
+        var newTodo = {
+            title: $scope.newTodo.trim(),
+            completed: false
+        };
+
+        if (!newTodo.title) {
+            return;
+        }
+
+        $scope.saving = true;
+        store.insert(newTodo)
+            .then(function success() {
+                $scope.newTodo = '';
+            })
+            .finally(function() {
+                $scope.saving = false;
             });
+    };
 
-            // Ajout d'une nouvelle tâche
-            // ================================================
-            $scope.addTodo = function() {
-                var newTodo = {
-                    title: $scope.newTodo.trim(),
-                    completed: false
-                };
+    // Editer une tâche
+    // ================================================
+    $scope.editTodo = function(todo) {
+        $scope.editedTodo = todo;
+        // Clone the original todo to restore it on demand.
+        $scope.originalTodo = angular.extend({}, todo);
+    };
 
-                if (!newTodo.title) {
-                    return;
-                }
+    // sauvegarder une tâche
+    // ================================================
+    $scope.saveEdits = function(todo, event) {
+        // Blur events are automatically triggered after the form submit event.
+        // This does some unfortunate logic handling to prevent saving twice.
+        if (event === 'blur' && $scope.saveEvent === 'submit') {
+            $scope.saveEvent = null;
+            return;
+        }
 
-                $scope.saving = true;
-                store.insert(newTodo)
-                    .then(function success() {
-                        $scope.newTodo = '';
-                    })
-                    .finally(function() {
-                        $scope.saving = false;
-                    });
-            };
+        //  $scope.saveEvent = event;
 
-            // Editer une tâche
-            // ================================================
-            $scope.editTodo = function(todo) {
-                $scope.editedTodo = todo;
-                // Clone the original todo to restore it on demand.
-                $scope.originalTodo = angular.extend({}, todo);
-            };
+        //  if ($scope.reverted) {
+        //      // Todo edits were reverted-- don't save.
+        //      $scope.reverted = null;
+        //      return;
+        //  }
 
-            $scope.saveEdits = function(todo, event) {
-                // Blur events are automatically triggered after the form submit event.
-                // This does some unfortunate logic handling to prevent saving twice.
-                if (event === 'blur' && $scope.saveEvent === 'submit') {
-                    $scope.saveEvent = null;
-                    return;
-                }
+        //  todo.title = todo.title.trim();
 
-                // 	$scope.saveEvent = event;
+        //  if (todo.title === $scope.originalTodo.title) {
+        //      $scope.editedTodo = null;
+        //      return;
+        //  }
 
-                // 	if ($scope.reverted) {
-                // 		// Todo edits were reverted-- don't save.
-                // 		$scope.reverted = null;
-                // 		return;
-                // 	}
+        //  store[todo.title ? 'put' : 'delete'](todo)
+        //      .then(function success() {}, function error() {
+        //          todo.title = $scope.originalTodo.title;
+        //      })
+        //      .finally(function () {
+        //          $scope.editedTodo = null;
+        //      });
+        // };
 
-                // 	todo.title = todo.title.trim();
+        // $scope.revertEdits = function (todo) {
+        //  todos[todos.indexOf(todo)] = $scope.originalTodo;
+        //  $scope.editedTodo = null;
+        //  $scope.originalTodo = null;
+        //  $scope.reverted = true;
+        // };
+    };
+    // Suppression d'une  tâche
+    // ================================================
+    $scope.removeTodo = function(todo) {
+        store.delete(todo);
+    };
 
-                // 	if (todo.title === $scope.originalTodo.title) {
-                // 		$scope.editedTodo = null;
-                // 		return;
-                // 	}
+    // $scope.saveTodo = function (todo) {
+    //  store.put(todo);
+    // };
 
-                // 	store[todo.title ? 'put' : 'delete'](todo)
-                // 		.then(function success() {}, function error() {
-                // 			todo.title = $scope.originalTodo.title;
-                // 		})
-                // 		.finally(function () {
-                // 			$scope.editedTodo = null;
-                // 		});
-                // };
+    // $scope.toggleCompleted = function (todo, completed) {
+    //  if (angular.isDefined(completed)) {
+    //      todo.completed = completed;
+    //  }
+    //  store.put(todo, todos.indexOf(todo))
+    //      .then(function success() {}, function error() {
+    //          todo.completed = !todo.completed;
+    //      });
+    // };
 
-                // $scope.revertEdits = function (todo) {
-                // 	todos[todos.indexOf(todo)] = $scope.originalTodo;
-                // 	$scope.editedTodo = null;
-                // 	$scope.originalTodo = null;
-                // 	$scope.reverted = true;
-                // };
+    // $scope.clearCompletedTodos = function () {
+    //  store.clearCompleted();
+    // };
 
-                // Suppression d'une  tâche
-                // ================================================
-                $scope.removeTodo = function(todo) {
-                    store.delete(todo);
-                };
+    //Cocher toutes les tâche
+    // ================================================
+    $scope.markAll = function(allChecked) {
+        todos.forEach(function(todo) {
+            if (todo.completed !== completed) {
+                $scope.toggleCompleted(todo, completed);
+            }
+        });
+    };
 
-                // $scope.saveTodo = function (todo) {
-                // 	store.put(todo);
-                // };
-
-                // $scope.toggleCompleted = function (todo, completed) {
-                // 	if (angular.isDefined(completed)) {
-                // 		todo.completed = completed;
-                // 	}
-                // 	store.put(todo, todos.indexOf(todo))
-                // 		.then(function success() {}, function error() {
-                // 			todo.completed = !todo.completed;
-                // 		});
-                // };
-
-                // $scope.clearCompletedTodos = function () {
-                // 	store.clearCompleted();
-                // };
-
-                //Cocher toutes les tâche
-                // ================================================
-                $scope.markAll = function(allChecked) {
-                    todos.forEach(function(todo) {
-                        if (todo.completed !== completed) {
-                            $scope.toggleCompleted(todo, completed);
-                        }
-                    });
-                };
-            });
+});

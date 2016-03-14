@@ -3,9 +3,13 @@
 
 var todomvc = angular.module('todomvc', [
     'ngAnimate',
-    'ui.sortable'
-
+    'ui.sortable',
+    'LocalStorageModule'
 ]);
+
+todomvc.config(['localStorageServiceProvider', function(localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('ls');
+}])
 
 todomvc.directive('ngBlur', function() {
     return function(scope, elem, attrs) {
@@ -16,8 +20,7 @@ todomvc.directive('ngBlur', function() {
 });
 
 
-todomvc.controller('TodoCtrl', function TodoCtrl($scope, $filter, $http, $location) {
-
+todomvc.controller('TodoCtrl', function TodoCtrl($scope, $filter, $http, $location, localStorageService) {
 
     $scope.todos = [];
 
@@ -27,13 +30,15 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $filter, $http, $locati
     $scope.placeholder = "Loading ....";
     $scope.statusFilter = {};
 
-
     // load data
-
+    // from json php
     $http.get('todos.php').success(function(data) {
-        $scope.todos = data;
-        $scope.placeholder = "What needs to be done?";
-    })
+            $scope.todos = data;
+            $scope.placeholder = "What needs to be done?";
+        })
+        // from local storage
+    var todosInStore = localStorageService.get('todos');
+    $scope.todos = todosInStore || [];
 
     // Monitor the current route for changes and adjust the filter accordingly.
     if ($location.path() == '') {
@@ -57,6 +62,7 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $filter, $http, $locati
         }).length;
         $scope.completedCount = $scope.todos.length - $scope.remainingCount;
         $scope.allChecked = !$scope.remainingCount;
+        localStorageService.set('todos', $scope.todos);
     }, true);
 
 
